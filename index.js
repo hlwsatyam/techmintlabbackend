@@ -4,18 +4,22 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
-const port = 3000;
+const port = 5000;
 
 // MongoDB connection
-mongoose.connect(
-  "mongodb+srv://techmintlab:20172522@techmintlab.kokuxap.mongodb.net/techmintlab?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+async function connectDB() {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://techmintlab:20172522@techmintlab.kokuxap.mongodb.net/techmintlab?retryWrites=true&w=majority"
+    );
+    console.log("MongoDB connected successfully!");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    process.exit(1); // Exit the process with a failure
   }
-);
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
+}
+
+connectDB();
 
 // Define a schema for the data
 const dataSchema = new mongoose.Schema({
@@ -27,8 +31,8 @@ const dataSchema = new mongoose.Schema({
 
 // Create a model based on the schema
 const Data = mongoose.model("Data", dataSchema);
+
 app.use(cors());
-// Body parser middleware
 app.use(bodyParser.json());
 
 // POST endpoint to save data to MongoDB
@@ -46,7 +50,7 @@ app.post("/submitData", async (req, res) => {
     res.status(200).json({ message: "Data saved successfully!" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(203).json({ message: "Internal server error" });
   }
 });
 
