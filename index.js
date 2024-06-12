@@ -34,7 +34,9 @@ const Data = mongoose.model("Data", dataSchema);
 
 app.use(cors());
 app.use(bodyParser.json());
-
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 // POST endpoint to save data to MongoDB
 app.post("/submitData", async (req, res) => {
   try {
